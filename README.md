@@ -2,6 +2,13 @@
 
 Gosuライブラリを使ったウィンドウ表示のPacman風ゲームです。プレイヤーはWASDまたは矢印キーで移動し、ゴーストを避けながら全てのペレットを食べるとクリアです。
 
+また、本リポジトリには開発時の GitHub Copilot との対話ログを [chatlog.md](chatlog.md) に記録しています。
+
+## 操作方法
+
+- 移動: `W`, `A`, `S`, `D` または矢印キー
+- 終了: `Esc` または `Q`
+
 ## 使い方（Windows）
 
 ### 1. 依存のインストール（Gosu）
@@ -117,8 +124,3 @@ ruby exe/pacman --map ".\config\maps\default.yaml"
 ```powershell
 pacman --map ".\config\maps\stage_narrow_grid.yaml"
 ```
-
-## 操作方法（ウィンドウ版）
-
-- 移動: `W`, `A`, `S`, `D` または矢印キー
-- 終了: `Esc` または `Q`
