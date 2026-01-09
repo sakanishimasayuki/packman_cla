@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+# frozen_string_literal: true
+
+# Ensure logs flush immediately to the terminal
+$stdout.sync = true
+
+# Development overlay: prefer local workspace code when available (set before require)
+dev_root = ENV['PACMAN_DEV'] || ENV['PACMAN_DEV_PATH']
+if dev_root && Dir.exist?(dev_root)
+	$LOAD_PATH.unshift File.expand_path('lib', dev_root)
+elsif Dir.exist?(File.expand_path('lib/pacman', Dir.pwd))
+	# When running from project root, prefer CWD/lib
+	$LOAD_PATH.unshift File.expand_path('lib', Dir.pwd)
+end
+
+begin
+	require 'pacman/window_game'
+rescue LoadError => e
+	warn "Failed to load pacman/window_game: #{e.message}"
+	warn "If Gosu is not installed, run: gem install gosu"
+	exit 1
+end
+
+map_path = nil
+args = ARGV.dup
+while (arg = args.shift)
+	if arg == '--map'
+		map_path = args.shift
+	elsif arg.start_with?('--map=')
+		map_path = arg.split('=', 2)[1]
+	end
+end
+map_path ||= ENV['PACMAN_MAP']
+default_cwd_yaml = File.expand_path('config/maps/default.yaml', Dir.pwd)
+map_path ||= default_cwd_yaml if File.file?(default_cwd_yaml)
+
+puts "Starting Pacman (DEV=#{!!dev_root || Dir.exist?(File.expand_path('lib/pacman', Dir.pwd))}) map=#{map_path || 'default'}" if ENV['PACMAN_DEBUG']
+win = Pacman::WindowGame.new(map_path: map_path)
+trap('INT') { win.close }
+win.show
